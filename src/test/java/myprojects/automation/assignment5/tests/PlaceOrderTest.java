@@ -10,7 +10,7 @@ public class PlaceOrderTest extends BaseTest {
         // TODO open main page and validate website version
     }
 
-    @Test
+    @Test (dependsOnMethods = "checkSiteVersion")
     public void createNewOrder() {
         // TODO implement order creation test
 
