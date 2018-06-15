@@ -4,6 +4,7 @@ import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.chrome.ChromeDriver;
 import org.openqa.selenium.chrome.ChromeOptions;
 import org.openqa.selenium.firefox.FirefoxDriver;
+import org.openqa.selenium.firefox.FirefoxOptions;
 import org.openqa.selenium.ie.InternetExplorerDriver;
 import org.openqa.selenium.ie.InternetExplorerOptions;
 import org.openqa.selenium.remote.RemoteWebDriver;
@@ -38,15 +39,6 @@ public class DriverFactory {
                 ieOptions.setCapability(InternetExplorerDriver.NATIVE_EVENTS, false);
                 return new InternetExplorerDriver(ieOptions);
 
-            case "remote-chrome":
-                ChromeOptions optionsRemote = new ChromeOptions();
-                try {
-                    return new RemoteWebDriver(new URL("http://localhost:4444/wd/hub"), optionsRemote);
-                } catch (MalformedURLException e) {
-                    e.printStackTrace();
-                }
-                return null;
-
             case "mobile":
                 System.setProperty(
                         "webdriver.chrome.driver",
@@ -75,6 +67,36 @@ public class DriverFactory {
      */
     public static WebDriver initDriver(String browser, String gridUrl) {
         // TODO prepare capabilities for required browser and return RemoteWebDriver instance
-        throw new UnsupportedOperationException();
+//        throw new UnsupportedOperationException();
+
+        switch (browser) {
+            case "ie":
+            case "internet explorer":
+                InternetExplorerOptions firefoxOptionsRemote = new InternetExplorerOptions();
+                try {
+                    return new RemoteWebDriver(new URL(gridUrl), firefoxOptionsRemote);
+                } catch (MalformedURLException e) {
+                    e.printStackTrace();
+                }
+
+            case "remote-firefox":
+                FirefoxOptions chromeOptionsRemote = new FirefoxOptions();
+                try {
+                    return new RemoteWebDriver(new URL(gridUrl), chromeOptionsRemote);
+                } catch (MalformedURLException e) {
+                    e.printStackTrace();
+                }
+                return null;
+
+            case "remote-chrome":
+            default:
+                ChromeOptions optionsRemote = new ChromeOptions();
+                try {
+                    return new RemoteWebDriver(new URL(gridUrl), optionsRemote);
+                } catch (MalformedURLException e) {
+                    e.printStackTrace();
+                }
+                return null;
+        }
     }
 }
