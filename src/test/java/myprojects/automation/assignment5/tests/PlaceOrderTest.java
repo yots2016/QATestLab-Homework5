@@ -10,8 +10,17 @@ public class PlaceOrderTest extends BaseTest {
     @Test
     public void checkSiteVersion() {
         // TODO open main page and validate website version
+
         CustomReporter.logAction("get main page");
         driver.get(Properties.getBaseUrl());
+
+
+
+        try {
+            Thread.sleep(5000);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
     }
 
     @Test (dependsOnMethods = "checkSiteVersion")
