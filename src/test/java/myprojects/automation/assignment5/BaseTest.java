@@ -1,5 +1,7 @@
 package myprojects.automation.assignment5;
 
+import myprojects.automation.assignment5.utils.DriverFactory;
+import myprojects.automation.assignment5.utils.logging.EventHandler;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.chrome.ChromeDriver;
 import org.openqa.selenium.support.events.EventFiringWebDriver;
@@ -20,18 +22,16 @@ public abstract class BaseTest {
 
     /**
      * Prepares {@link WebDriver} instance with timeout and browser window configurations.
-     *
+     * <p>
      * Driver type is based on passed parameters to the automation project,
      * creates {@link ChromeDriver} instance by default.
-     *
      */
     @BeforeClass
     @Parameters({"selenium.browser", "selenium.grid"})
-    public void setUp(@Optional("chrome") String browser, @Optional("") String gridUrl) {
+    public void setUp(@Optional("chrome") String browser, @Optional("http://localhost:4444/wd/hub") String gridUrl) {
         // TODO create WebDriver instance according to passed parameters
-        // driver = new EventFiringWebDriver(....);
-        // driver.register(new EventHandler());
-        // ...
+        driver = new EventFiringWebDriver(DriverFactory.initDriver(browser, gridUrl));
+        driver.register(new EventHandler());
 
         driver.manage().timeouts().implicitlyWait(15, TimeUnit.SECONDS);
         driver.manage().timeouts().pageLoadTimeout(30, TimeUnit.SECONDS);
@@ -55,7 +55,6 @@ public abstract class BaseTest {
     }
 
     /**
-     *
      * @return Whether required browser displays content in mobile mode.
      */
     private boolean isMobileTesting(String browser) {
