@@ -1,8 +1,29 @@
 <!DOCTYPE suite SYSTEM "http://testng.org/testng-1.0.dtd" >
 
 <suite name="Products Management" verbose="1" >
+    <listeners>
+        <listener class-name="org.uncommons.reportng.HTMLReporter"/>
+        <listener class-name="org.uncommons.reportng.JUnitXMLReporter"/>
+    </listeners>
+
     <test name="Create New Order [Chrome]" >
         <parameter name="selenium.browser" value="chrome" />
+        <parameter name="selenium.grid" value="http://localhost:4444/wd/hub" />
+        <classes>
+            <class name="myprojects.automation.assignment5.tests.PlaceOrderTest" />
+        </classes>
+    </test>
+
+    <test name="Create New Order [Firefox]" >
+        <parameter name="selenium.browser" value="firefox" />
+        <parameter name="selenium.grid" value="http://localhost:4444/wd/hub" />
+        <classes>
+            <class name="myprojects.automation.assignment5.tests.PlaceOrderTest" />
+        </classes>
+    </test>
+
+    <test name="Create New Product [Internet Explorer]" >
+        <parameter name="selenium.browser" value="ie" />
         <parameter name="selenium.grid" value="http://localhost:4444/wd/hub" />
         <classes>
             <class name="myprojects.automation.assignment5.tests.PlaceOrderTest" />
