@@ -21,7 +21,7 @@ public class PlaceOrderTest extends BaseTest {
 
     @Test
     public void checkSiteVersion() {
-        CustomReporter.logAction("get main page");
+        CustomReporter.logAction("Get main page");
         driver.get(Properties.getBaseUrl());
 
         WebElement mobileVersionElement = driver
@@ -29,12 +29,12 @@ public class PlaceOrderTest extends BaseTest {
 
         CustomReporter.logAction("Check site version");
         if (isMobileTesting("mobile")) {
-            Assert.assertTrue(mobileVersionElement.isDisplayed());
+            Assert.assertTrue(mobileVersionElement.isDisplayed(), "Used desktop version of the site");
 
             CustomReporter.logAction("A mobile version of the site was loaded");
         }
         else {
-            Assert.assertFalse(mobileVersionElement.isDisplayed());
+            Assert.assertFalse(mobileVersionElement.isDisplayed(), "Used desktop version of the site");
 
             CustomReporter.logAction("A mobile version of the site was downloaded");
         }
@@ -42,6 +42,8 @@ public class PlaceOrderTest extends BaseTest {
 
     @Test (dependsOnMethods = "checkSiteVersion")
     public void createNewOrder() {
+        CustomReporter.logAction("Create new order");
+
         GeneralActions generalActions = new GeneralActions(driver);
         generalActions.openRandomProduct();
 
@@ -64,17 +66,22 @@ public class PlaceOrderTest extends BaseTest {
                 .xpath("//*[@class=\"product-line-info\"]//*[@class=\"label\"]");
         WebElement productNameElementElement = waitForContentLoad(productNameLocator);
         String productName = productNameElementElement.getText().toUpperCase();
-        Assert.assertEquals(productName, productData.getName());
+        CustomReporter.logAction("Starting check items in the basket");
+        Assert.assertEquals(productName, productData.getName()
+                , "In the basket is incorrectly displayed - product name");
 
         WebElement productPriceElement = driver.findElement(By
                 .xpath("//*[@class=\"product-line-info\"]//*[@class=\"value\"]"));
         String productPrice = productPriceElement.getText();
-        Assert.assertEquals(DataConverter.parsePriceValue(productPrice), productData.getPrice());
+        Assert.assertEquals(DataConverter.parsePriceValue(productPrice), productData.getPrice()
+                , "In the basket is incorrectly displayed - product price");
 
         WebElement productQuantityElement = driver.findElement(By
                 .xpath("//*[@class=\"input-group bootstrap-touchspin\"]//*[@class=\"js-cart-line-product-quantity form-control\"]"));
         String productQuantity = productQuantityElement.getAttribute("value");
-        Assert.assertEquals(DataConverter.parseStockValue(productQuantity), productData.getQty());
+        Assert.assertEquals(DataConverter.parseStockValue(productQuantity), productData.getQty()
+                , "In the basket is incorrectly displayed - product quantity");
+        CustomReporter.logAction("Ending check items in the basket");
 
         driver.findElement(By
                 .xpath("//*[@class=\"checkout cart-detailed-actions card-block\"]//*[@class=\"text-xs-center\"]"))
@@ -97,7 +104,9 @@ public class PlaceOrderTest extends BaseTest {
         waitForContentLoad(By.xpath("//*[@id=\"payment-confirmation\"]//button[@type=\"submit\"]")).click();
 
         WebElement materialIconDoneElement = waitForContentLoad(By.xpath("//*[@class=\"material-icons done\"]"));
+        CustomReporter.logAction("Starting check the message confirming the order of the goods");
         Assert.assertFalse(Objects.isNull(materialIconDoneElement));
+        CustomReporter.logAction("Ending check the message confirming the order of the goods");
 
         By productNameAfterOrderingLocator = By
                 .xpath("//*[@id=\"order-items\"]//*[@class=\"col-sm-4 col-xs-9 details\"]/span");
@@ -105,6 +114,7 @@ public class PlaceOrderTest extends BaseTest {
         String productNameAfterOrdering = productNameAfterOrderingElement.getText()
                 .substring(0, productData.getName().length()).toUpperCase();
 
+        CustomReporter.logAction("Starting check details of the order");
         Assert.assertEquals(productNameAfterOrdering, productData.getName());
 
         WebElement productPriceAfterOrderingElement = driver.findElement(By
@@ -116,6 +126,7 @@ public class PlaceOrderTest extends BaseTest {
                 .xpath("//*[@id=\"order-items\"]//*[@class=\"col-xs-2\"]"));
         String productQuantityAfterOrdering = productQuantityAfterOrderingElement.getText();
         Assert.assertEquals(DataConverter.parseStockValue(productQuantityAfterOrdering), productData.getQty());
+        CustomReporter.logAction("Ending check details of the order");
 
         WebElement serchField = waitForContentLoad(By.xpath("//*[@id=\"search_widget\"]//*[@name=\"s\"]"));
 
@@ -140,7 +151,9 @@ public class PlaceOrderTest extends BaseTest {
         int productQuantityAfterSaleValue = DataConverter
                 .parseStockValue(productQuantityAfterSaleElement.getAttribute("innerHTML"));
 
-        Assert.assertTrue((productQuantityBeforeSaleValue - productQuantityAfterSaleValue) == 1);
+        CustomReporter.logAction("Starting check of reduction of quantity of goods per unit");
+        Assert.assertEquals(1, (productQuantityBeforeSaleValue - productQuantityAfterSaleValue));
+        CustomReporter.logAction("Ending check of reduction of quantity of goods per unit");
     }
 
     private WebElement waitForContentLoad(By by) {
