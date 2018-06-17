@@ -82,9 +82,26 @@ public class PlaceOrderTest extends BaseTest {
         String productQuantity = productQuantityElement.getAttribute("value");
         Assert.assertEquals(DataConverter.parseStockValue(productQuantity), productData.getQty());
 
-        waitForContentLoad(By
+        driver.findElement(By
                 .xpath("//*[@class=\"checkout cart-detailed-actions card-block\"]//*[@class=\"text-xs-center\"]"))
                 .click();
+
+        waitForContentLoad(By.name("firstname")).sendKeys("sdasdasda");
+        driver.findElement(By.name("lastname")).sendKeys("rtertewtert");
+        driver.findElement(By.name("email")).sendKeys("webinar.test@gmail.com");
+        driver.findElement(By.name("continue")).click();
+
+        waitForContentLoad(By.name("address1")).sendKeys("fjfjfjfjfjfjfjfjfjfjfjfjfjf");
+        driver.findElement(By.name("postcode")).sendKeys("11111");
+        driver.findElement(By.name("city")).sendKeys("Cherdf");
+        driver.findElement(By.name("confirm-addresses")).click();
+
+        waitForContentLoad(By.name("confirmDeliveryOption")).click();
+
+        waitForContentLoad(By.id("payment-option-1")).click();
+        waitForContentLoad(By.id("conditions_to_approve[terms-and-conditions]")).click();
+        waitForContentLoad(By.xpath("//*[@id=\"payment-confirmation\"]//button[@type=\"submit\"]")).click();
+
 
 //        System.out.println(productName + " " + productQuantity + " " + DataConverter.parsePriceValue(productPrice));
 
