@@ -66,6 +66,14 @@ public class PlaceOrderTest extends BaseTest {
 //                .getQty() + " " + generalActions.getOpenedProductInfo().getPrice());
         ProductData productData = generalActions.getOpenedProductInfo();
 
+        waitForContentLoad(By.xpath("//*[@class=\"nav nav-tabs\"]//*[@href=\"#product-details\"]")).click();
+
+        WebElement productQuantityBeforeSaleElement = waitForContentLoad(By
+                .xpath("//*[@id=\"product-details\"]/div[@class=\"product-quantities\"]/span"));
+
+        int productQuantityBeforeSaleValue = DataConverter
+                .parseStockValue(productQuantityBeforeSaleElement.getAttribute("innerHTML"));
+
         waitForContentLoad(By.xpath("//*[@class=\"btn btn-primary add-to-cart\"]")).click();
 
         clickOnInvisibleElement(waitForContentLoad(By
@@ -143,12 +151,23 @@ public class PlaceOrderTest extends BaseTest {
         serchField.submit();
 
 
+        waitForContentLoad(By.xpath("//*[@id=\"js-product-list\"]//*[@class=\"h3 product-title\"]/a")).click();
+
+        waitForContentLoad(By.xpath("//*[@class=\"nav nav-tabs\"]//*[@href=\"#product-details\"]")).click();
+
+        WebElement productQuantityAfterSaleElement = waitForContentLoad(By
+                .xpath("//*[@id=\"product-details\"]/div[@class=\"product-quantities\"]/span"));
 
 
-        driver.findElement(By.xpath("//*[@class=\"nav-item\"]//*[@class=\"nav-link active\"]"));
+        int productQuantityAfterSaleValue = DataConverter
+                .parseStockValue(productQuantityAfterSaleElement.getAttribute("innerHTML"));
+
+        Assert.assertEquals(1, (productQuantityBeforeSaleValue - productQuantityAfterSaleValue));
+
+
 
         try {
-            Thread.sleep(4000);
+            Thread.sleep(3000);
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
