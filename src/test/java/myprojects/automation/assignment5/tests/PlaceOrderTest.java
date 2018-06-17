@@ -28,7 +28,7 @@ public class PlaceOrderTest extends BaseTest {
                 .findElement(By.xpath("//*[@class=\"hidden-md-up text-xs-center mobile\"]"));
 
         CustomReporter.logAction("Check site version");
-        if (isMobileTesting("mobile")) {
+        if (isMobileTesting("chrome")) {
             Assert.assertTrue(mobileVersionElement.isDisplayed(), "Used desktop version of the site");
 
             CustomReporter.logAction("A mobile version of the site was loaded");
