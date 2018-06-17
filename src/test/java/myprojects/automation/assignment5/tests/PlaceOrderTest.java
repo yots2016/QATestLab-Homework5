@@ -14,6 +14,9 @@ import org.openqa.selenium.support.ui.WebDriverWait;
 import org.testng.Assert;
 import org.testng.annotations.Test;
 
+import java.awt.*;
+import java.awt.datatransfer.Clipboard;
+import java.awt.datatransfer.StringSelection;
 import java.util.Objects;
 
 public class PlaceOrderTest extends BaseTest {
@@ -126,8 +129,23 @@ public class PlaceOrderTest extends BaseTest {
         String productQuantityAfterOrdering = productQuantityAfterOrderingElement.getText();
         Assert.assertEquals(DataConverter.parseStockValue(productQuantityAfterOrdering), productData.getQty());
 
+        WebElement serchField = waitForContentLoad(By.xpath("//*[@id=\"search_widget\"]//*[@name=\"s\"]"));
 
 
+        new Actions(driver).moveToElement(serchField).click(serchField).build().perform();
+
+        StringSelection selection = new StringSelection(productData.getName());
+        Clipboard clipboard = Toolkit.getDefaultToolkit().getSystemClipboard();
+        clipboard.setContents(selection, selection);
+
+        serchField.sendKeys(Keys.BACK_SPACE);
+        serchField.sendKeys(Keys.CONTROL + "v");
+        serchField.submit();
+
+
+
+
+        driver.findElement(By.xpath("//*[@class=\"nav-item\"]//*[@class=\"nav-link active\"]"));
 
         try {
             Thread.sleep(4000);
