@@ -14,6 +14,8 @@ import org.openqa.selenium.support.ui.WebDriverWait;
 import org.testng.Assert;
 import org.testng.annotations.Test;
 
+import java.util.Objects;
+
 public class PlaceOrderTest extends BaseTest {
 
     @Test
@@ -102,8 +104,30 @@ public class PlaceOrderTest extends BaseTest {
         waitForContentLoad(By.id("conditions_to_approve[terms-and-conditions]")).click();
         waitForContentLoad(By.xpath("//*[@id=\"payment-confirmation\"]//button[@type=\"submit\"]")).click();
 
+        WebElement materialIconDoneElement = waitForContentLoad(By.xpath("//*[@class=\"material-icons done\"]"));
+        Assert.assertFalse(Objects.isNull(materialIconDoneElement));
 
-//        System.out.println(productName + " " + productQuantity + " " + DataConverter.parsePriceValue(productPrice));
+
+        By productNameAfterOrderingLocator = By
+                .xpath("//*[@id=\"order-items\"]//*[@class=\"col-sm-4 col-xs-9 details\"]/span");
+        WebElement productNameAfterOrderingElement = waitForContentLoad(productNameAfterOrderingLocator);
+        String productNameAfterOrdering = productNameAfterOrderingElement.getText()
+                .substring(0, productData.getName().length()).toUpperCase();
+
+        Assert.assertEquals(productNameAfterOrdering, productData.getName());
+
+        WebElement productPriceAfterOrderingElement = driver.findElement(By
+                .xpath("//*[@id=\"order-items\"]//*[@class=\"col-xs-5 text-sm-right text-xs-left\"]"));
+        String productPriceAfterOrdering = productPriceAfterOrderingElement.getText();
+        Assert.assertEquals(DataConverter.parsePriceValue(productPriceAfterOrdering), productData.getPrice());
+
+        WebElement productQuantityAfterOrderingElement = driver.findElement(By
+                .xpath("//*[@id=\"order-items\"]//*[@class=\"col-xs-2\"]"));
+        String productQuantityAfterOrdering = productQuantityAfterOrderingElement.getText();
+        Assert.assertEquals(DataConverter.parseStockValue(productQuantityAfterOrdering), productData.getQty());
+
+
+
 
         try {
             Thread.sleep(4000);
