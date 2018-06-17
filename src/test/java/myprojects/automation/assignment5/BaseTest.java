@@ -5,6 +5,7 @@ import myprojects.automation.assignment5.utils.logging.EventHandler;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.chrome.ChromeDriver;
 import org.openqa.selenium.support.events.EventFiringWebDriver;
+import org.openqa.selenium.support.ui.WebDriverWait;
 import org.testng.annotations.AfterClass;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Optional;
@@ -20,6 +21,7 @@ public abstract class BaseTest {
     protected EventFiringWebDriver driver;
     protected GeneralActions actions;
     protected boolean isMobileTesting;
+    protected WebDriverWait wait;
 
     /**
      * Prepares {@link WebDriver} instance with timeout and browser window configurations.
@@ -37,6 +39,8 @@ public abstract class BaseTest {
         driver.manage().timeouts().implicitlyWait(15, TimeUnit.SECONDS);
         driver.manage().timeouts().pageLoadTimeout(30, TimeUnit.SECONDS);
         // unable to maximize window in mobile mode
+        wait = new WebDriverWait(driver, 30);
+
         if (!isMobileTesting(browser))
             driver.manage().window().maximize();
 

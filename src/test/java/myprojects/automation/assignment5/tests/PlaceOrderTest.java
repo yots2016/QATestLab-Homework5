@@ -1,10 +1,13 @@
 package myprojects.automation.assignment5.tests;
 
 import myprojects.automation.assignment5.BaseTest;
+import myprojects.automation.assignment5.GeneralActions;
+import myprojects.automation.assignment5.model.ProductData;
+import myprojects.automation.assignment5.utils.DataConverter;
 import myprojects.automation.assignment5.utils.Properties;
 import myprojects.automation.assignment5.utils.logging.CustomReporter;
-import org.openqa.selenium.By;
-import org.openqa.selenium.WebElement;
+import org.openqa.selenium.*;
+import org.openqa.selenium.interactions.Actions;
 import org.openqa.selenium.support.ui.ExpectedCondition;
 import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.support.ui.WebDriverWait;
@@ -12,8 +15,6 @@ import org.testng.Assert;
 import org.testng.annotations.Test;
 
 public class PlaceOrderTest extends BaseTest {
-
-    private WebDriverWait wait = new WebDriverWait(driver, 30);
 
     @Test
     public void checkSiteVersion() {
@@ -25,22 +26,15 @@ public class PlaceOrderTest extends BaseTest {
         WebElement webElement = driver.findElement(By.xpath("//*[@class=\"hidden-md-up text-xs-center mobile\"]"));
 
         CustomReporter.logAction("Check site version");
-        if (!isMobileTesting("chrome")) {
+        if (isMobileTesting("chrome")) {
             Assert.assertTrue(webElement.isDisplayed());
 
-            CustomReporter.logAction("A mobile version of the site was downloaded");
+            CustomReporter.logAction("A desktop version of the site was loaded");
         }
         else {
             Assert.assertFalse(webElement.isDisplayed());
 
-            CustomReporter.logAction("A desktop version of the site was loaded");
-        }
-
-
-        try {
-            Thread.sleep(1000);
-        } catch (InterruptedException e) {
-            e.printStackTrace();
+            CustomReporter.logAction("A mobile version of the site was downloaded");
         }
     }
 
@@ -59,15 +53,61 @@ public class PlaceOrderTest extends BaseTest {
         // place new order and validate order summary
 
         // check updated In Stock value
+        GeneralActions generalActions = new GeneralActions(driver);
+        generalActions.openRandomProduct();
 
-        waitForContentLoad(By.xpath("//*[@class=\"all-product-link pull-xs-left pull-md-right h4\"]"));
 
+//        System.out.println(generalActions.getOpenedProductInfo().getName() + " " + generalActions.getOpenedProductInfo()
+//                .getQty() + " " + generalActions.getOpenedProductInfo().getPrice());
+        ProductData productData = generalActions.getOpenedProductInfo();
 
+        waitForContentLoad(By.xpath("//*[@class=\"btn btn-primary add-to-cart\"]")).click();
 
+        clickOnInvisibleElement(waitForContentLoad(By
+                .xpath("//*[@class=\"cart-content\"]/a[@class=\"btn btn-primary\"]")), driver);
+
+        By productNameLocator = By
+                .xpath("//*[@class=\"product-line-info\"]//*[@class=\"label\"]");
+        WebElement productNameElementElement = waitForContentLoad(productNameLocator);
+        String productName = productNameElementElement.getText().toUpperCase();
+        Assert.assertEquals(productName, productData.getName());
+
+        WebElement productPriceElement = driver.findElement(By
+                .xpath("//*[@class=\"product-line-info\"]//*[@class=\"value\"]"));
+        String productPrice = productPriceElement.getText();
+        Assert.assertEquals(DataConverter.parsePriceValue(productPrice), productData.getPrice());
+
+        WebElement productQuantityElement = driver.findElement(By
+                .xpath("//*[@class=\"input-group bootstrap-touchspin\"]//*[@class=\"js-cart-line-product-quantity form-control\"]"));
+        String productQuantity = productQuantityElement.getAttribute("value");
+        Assert.assertEquals(DataConverter.parseStockValue(productQuantity), productData.getQty());
+
+        waitForContentLoad(By
+                .xpath("//*[@class=\"checkout cart-detailed-actions card-block\"]//*[@class=\"text-xs-center\"]"))
+                .click();
+
+//        System.out.println(productName + " " + productQuantity + " " + DataConverter.parsePriceValue(productPrice));
+
+        try {
+            Thread.sleep(4000);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
     }
 
     private WebElement waitForContentLoad(By by) {
         return wait.until(ExpectedConditions.presenceOfElementLocated(by));
+    }
+
+    public static void clickOnInvisibleElement(WebElement element, WebDriver driver) {
+
+        String script = "var object = arguments[0];"
+                + "var theEvent = document.createEvent(\"MouseEvent\");"
+                + "theEvent.initMouseEvent(\"click\", true, true, window, 0, 0, 0, 0, 0, false, false, false, false, 0, null);"
+                + "object.dispatchEvent(theEvent);"
+                ;
+
+        ((JavascriptExecutor)driver).executeScript(script, element);
     }
 
 }
