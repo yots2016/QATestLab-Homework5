@@ -9,7 +9,6 @@ import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.support.ui.WebDriverWait;
-import org.testng.Assert;
 
 /**
  * Contains main script actions that may be used in scripts.
@@ -36,8 +35,6 @@ public class GeneralActions {
      */
     public ProductData getOpenedProductInfo() {
         CustomReporter.logAction("Get information about currently opened product");
-        // TODO extract data from opened page
-//        throw new UnsupportedOperationException();
 
         WebElement productNameElementAfterOpen = driver.findElement(By
                 .xpath("//*[@id=\"main\"]//*[@class=\"col-md-6\"]/h1[@itemprop=\"name\"]"));

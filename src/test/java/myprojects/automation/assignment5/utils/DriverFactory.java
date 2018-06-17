@@ -26,7 +26,7 @@ public class DriverFactory {
             case "firefox":
                 System.setProperty(
                         "webdriver.gecko.driver",
-                        new File(DriverFactory.class.getResource("/geckodriver.exe").getFile()).getPath());
+                        new File(DriverFactory.class.getResource("/geckodriver").getFile()).getPath());
                 return new FirefoxDriver();
 
             case "ie":
@@ -66,9 +66,6 @@ public class DriverFactory {
      * @return New instance of {@link RemoteWebDriver} object.
      */
     public static WebDriver initDriver(String browser, String gridUrl) {
-        // TODO prepare capabilities for required browser and return RemoteWebDriver instance
-//        throw new UnsupportedOperationException();
-
         switch (browser) {
             case "ie":
             case "internet explorer":

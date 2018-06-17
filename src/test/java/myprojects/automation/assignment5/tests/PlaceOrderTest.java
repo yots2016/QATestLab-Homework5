@@ -8,9 +8,7 @@ import myprojects.automation.assignment5.utils.Properties;
 import myprojects.automation.assignment5.utils.logging.CustomReporter;
 import org.openqa.selenium.*;
 import org.openqa.selenium.interactions.Actions;
-import org.openqa.selenium.support.ui.ExpectedCondition;
 import org.openqa.selenium.support.ui.ExpectedConditions;
-import org.openqa.selenium.support.ui.WebDriverWait;
 import org.testng.Assert;
 import org.testng.annotations.Test;
 
@@ -23,21 +21,20 @@ public class PlaceOrderTest extends BaseTest {
 
     @Test
     public void checkSiteVersion() {
-        // TODO open main page and validate website version
-
         CustomReporter.logAction("get main page");
         driver.get(Properties.getBaseUrl());
 
-        WebElement webElement = driver.findElement(By.xpath("//*[@class=\"hidden-md-up text-xs-center mobile\"]"));
+        WebElement mobileVersionElement = driver
+                .findElement(By.xpath("//*[@class=\"hidden-md-up text-xs-center mobile\"]"));
 
         CustomReporter.logAction("Check site version");
-        if (isMobileTesting("chrome")) {
-            Assert.assertTrue(webElement.isDisplayed());
+        if (isMobileTesting("mobile")) {
+            Assert.assertTrue(mobileVersionElement.isDisplayed());
 
-            CustomReporter.logAction("A desktop version of the site was loaded");
+            CustomReporter.logAction("A mobile version of the site was loaded");
         }
         else {
-            Assert.assertFalse(webElement.isDisplayed());
+            Assert.assertFalse(mobileVersionElement.isDisplayed());
 
             CustomReporter.logAction("A mobile version of the site was downloaded");
         }
@@ -45,25 +42,9 @@ public class PlaceOrderTest extends BaseTest {
 
     @Test (dependsOnMethods = "checkSiteVersion")
     public void createNewOrder() {
-        // TODO implement order creation test
-
-        // open random product
-
-        // save product parameters
-
-        // add product to Cart and validate product information in the Cart
-
-        // proceed to order creation, fill required information
-
-        // place new order and validate order summary
-
-        // check updated In Stock value
         GeneralActions generalActions = new GeneralActions(driver);
         generalActions.openRandomProduct();
 
-
-//        System.out.println(generalActions.getOpenedProductInfo().getName() + " " + generalActions.getOpenedProductInfo()
-//                .getQty() + " " + generalActions.getOpenedProductInfo().getPrice());
         ProductData productData = generalActions.getOpenedProductInfo();
 
         waitForContentLoad(By.xpath("//*[@class=\"nav nav-tabs\"]//*[@href=\"#product-details\"]")).click();
@@ -118,7 +99,6 @@ public class PlaceOrderTest extends BaseTest {
         WebElement materialIconDoneElement = waitForContentLoad(By.xpath("//*[@class=\"material-icons done\"]"));
         Assert.assertFalse(Objects.isNull(materialIconDoneElement));
 
-
         By productNameAfterOrderingLocator = By
                 .xpath("//*[@id=\"order-items\"]//*[@class=\"col-sm-4 col-xs-9 details\"]/span");
         WebElement productNameAfterOrderingElement = waitForContentLoad(productNameAfterOrderingLocator);
@@ -139,7 +119,6 @@ public class PlaceOrderTest extends BaseTest {
 
         WebElement serchField = waitForContentLoad(By.xpath("//*[@id=\"search_widget\"]//*[@name=\"s\"]"));
 
-
         new Actions(driver).moveToElement(serchField).click(serchField).build().perform();
 
         StringSelection selection = new StringSelection(productData.getName());
@@ -149,7 +128,6 @@ public class PlaceOrderTest extends BaseTest {
         serchField.sendKeys(Keys.BACK_SPACE);
         serchField.sendKeys(Keys.CONTROL + "v");
         serchField.submit();
-
 
         waitForContentLoad(By.xpath("//*[@id=\"js-product-list\"]//*[@class=\"h3 product-title\"]/a")).click();
 
@@ -162,15 +140,7 @@ public class PlaceOrderTest extends BaseTest {
         int productQuantityAfterSaleValue = DataConverter
                 .parseStockValue(productQuantityAfterSaleElement.getAttribute("innerHTML"));
 
-        Assert.assertEquals(1, (productQuantityBeforeSaleValue - productQuantityAfterSaleValue));
-
-
-
-        try {
-            Thread.sleep(3000);
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-        }
+        Assert.assertTrue((productQuantityBeforeSaleValue - productQuantityAfterSaleValue) == 1);
     }
 
     private WebElement waitForContentLoad(By by) {
