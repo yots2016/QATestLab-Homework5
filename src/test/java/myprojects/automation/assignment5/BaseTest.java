@@ -58,7 +58,7 @@ public abstract class BaseTest {
     /**
      * @return Whether required browser displays content in mobile mode.
      */
-    private boolean isMobileTesting(String browser) {
+    protected boolean isMobileTesting(String browser) {
         switch (browser) {
             case "mobile":
                 return true;
