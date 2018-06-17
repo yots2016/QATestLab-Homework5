@@ -42,7 +42,7 @@ public class DriverFactory {
             case "mobile":
                 System.setProperty(
                         "webdriver.chrome.driver",
-                        new File(DriverFactory.class.getResource("/chromedriver.exe").getFile()).getPath());
+                        new File(DriverFactory.class.getResource("/chromedriver").getFile()).getPath());
                 Map<String, String> mobileEmulation = new HashMap<>();
                 mobileEmulation.put("deviceName", "iPhone 6");
 
@@ -54,7 +54,7 @@ public class DriverFactory {
             default:
                 System.setProperty(
                         "webdriver.chrome.driver",
-                        new File(DriverFactory.class.getResource("/chromedriver.exe").getFile()).getPath());
+                        new File(DriverFactory.class.getResource("/chromedriver").getFile()).getPath());
                 return new ChromeDriver();
         }
     }

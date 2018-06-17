@@ -3,6 +3,9 @@ package myprojects.automation.assignment5.tests;
 import myprojects.automation.assignment5.BaseTest;
 import myprojects.automation.assignment5.utils.Properties;
 import myprojects.automation.assignment5.utils.logging.CustomReporter;
+import org.openqa.selenium.By;
+import org.openqa.selenium.WebElement;
+import org.testng.Assert;
 import org.testng.annotations.Test;
 
 public class PlaceOrderTest extends BaseTest {
@@ -14,10 +17,19 @@ public class PlaceOrderTest extends BaseTest {
         CustomReporter.logAction("get main page");
         driver.get(Properties.getBaseUrl());
 
+        WebElement webElement = driver.findElement(By.xpath("//*[@class=\"hidden-md-up text-xs-center mobile\"]"));
+        if (webElement.isDisplayed()) {
+            Assert.assertTrue(webElement.isDisplayed());
+            CustomReporter.logAction("A mobile version of the site was downloaded");
+        }
+        else {
+            Assert.assertFalse(webElement.isDisplayed());
+            CustomReporter.logAction("A desktop version of the site was loaded");
+        }
 
 
         try {
-            Thread.sleep(5000);
+            Thread.sleep(1000);
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
